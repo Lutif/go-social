@@ -1,0 +1,3 @@
+- [ ] have getUserById endpoint -DONE
+- [ ] have followUser endpoint
+- [ ] have unfollowUser endpoint
