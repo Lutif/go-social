@@ -28,12 +28,17 @@ type Store struct {
 		Create(context.Context, *User) error
 		GetById(context.Context, int64) (User, error)
 	}
+	Followers interface {
+		Follow(ctx context.Context, userID int64, followerID int64) error
+		Unfollow(ctx context.Context, userID int64, followerID int64) error
+	}
 }
 
 func NewPostgresStorage(db *sql.DB) Store {
 	return Store{
-		Posts:    &PostsStore{db},
-		Users:    &UsersStore{db},
-		Comments: &CommentsStore{db},
+		Posts:     &PostsStore{db},
+		Users:     &UsersStore{db},
+		Comments:  &CommentsStore{db},
+		Followers: &FollowerStore{db},
 	}
 }
