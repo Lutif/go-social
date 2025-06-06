@@ -9,15 +9,14 @@ import (
 )
 
 type Post struct {
-	ID        int64     `json:"id"`
-	Content   string    `json:"content"`
-	Title     string    `json:"title"`
-	UserID    int64     `json:"user_id"`
-	Tags      []string  `json:"tags"`
-	Version   int64     `json:"version"`
-	CreatedAt string    `json:"created_at"`
-	UpdatedAt string    `json:"updated_at"`
-	Comments  []Comment `json:"comments"`
+	ID        int64    `json:"id"`
+	Content   string   `json:"content"`
+	Title     string   `json:"title"`
+	UserID    int64    `json:"user_id"`
+	Tags      []string `json:"tags"`
+	Version   int64    `json:"version"`
+	CreatedAt string   `json:"created_at"`
+	UpdatedAt string   `json:"updated_at"`
 }
 
 type PostsStore struct {
@@ -104,30 +103,4 @@ func (s *PostsStore) Delete(ctx context.Context, id int64) error {
 		return ErrNotFound
 	}
 	return nil
-}
-
-func (s *PostsStore) ListByUserId(ctx context.Context, userID int64, posts *[]Post) error {
-	query := `
-	SELECT title, content, tags, posts.created_at, username 
-	FROM posts 
-	LEFT JOIN users
-	ON posts.user_id = users.id
-	WHERE posts.user_id = $1
-	`
-
-	rows, err := s.db.QueryContext(ctx, query, userID)
-	if err != nil {
-		return err
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var post Post
-		var username string
-		if err := rows.Scan(&post.Title, &post.Content, pq.Array(&post.Tags), &post.CreatedAt, &username); err != nil {
-			return err
-		}
-		*posts = append(*posts, post)
-	}
-	return rows.Err()
 }

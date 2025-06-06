@@ -28,3 +28,9 @@ run-server:
 .PHONY: watch-server
 watch-server:
 	@air
+
+.PHONY: db-seed
+
+db-seed:
+	@echo "Seeding database with test data using scripts/db-seed.sql"
+	@psql "postgres://admin:password@localhost/social?sslmode=disable" -f scripts/db-seed.sql

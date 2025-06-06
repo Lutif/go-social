@@ -46,6 +46,25 @@ func (app *application) getUserHandler(w http.ResponseWriter, r *http.Request) {
 	writeJson(w, http.StatusAccepted, user)
 }
 
+func (app *application) getUserFeed(w http.ResponseWriter, r *http.Request) {
+	userId := int64(1)
+	ctx := r.Context()
+	pagination := store.Paginated{}
+	err := pagination.Parse(r)
+	if err != nil {
+		writeBadInputErr(w, err)
+		return
+	}
+
+	feed, err := app.store.Feed.GetUserFeed(ctx, userId, pagination)
+
+	if err != nil {
+		writeInternalServerErr(w, err)
+		return
+	}
+	writeJson(w, http.StatusAccepted, feed)
+}
+
 func (app *application) userContextMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		param := chi.URLParam(r, "userId")

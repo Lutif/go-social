@@ -16,7 +16,6 @@ type Store struct {
 		GetById(context.Context, int64) (Post, error)
 		Update(context.Context, *Post) error
 		Delete(context.Context, int64) error
-		ListByUserId(context.Context, int64, *[]Post) error
 	}
 	Comments interface {
 		Create(context.Context, *Comment) error
@@ -32,6 +31,9 @@ type Store struct {
 		Follow(ctx context.Context, userID int64, followerID int64) error
 		Unfollow(ctx context.Context, userID int64, followerID int64) error
 	}
+	Feed interface {
+		GetUserFeed(ctx context.Context, userId int64, paginated Paginated) ([]FeedPost, error)
+	}
 }
 
 func NewPostgresStorage(db *sql.DB) Store {
@@ -40,5 +42,6 @@ func NewPostgresStorage(db *sql.DB) Store {
 		Users:     &UsersStore{db},
 		Comments:  &CommentsStore{db},
 		Followers: &FollowerStore{db},
+		Feed:      &FeedStore{db},
 	}
 }

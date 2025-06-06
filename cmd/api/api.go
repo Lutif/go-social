@@ -28,7 +28,7 @@ func (app *application) mount() http.Handler {
 	r.Get("/health", app.healthCheckHandler)
 	r.Route("/users", func(r chi.Router) {
 		r.Post("/", app.createUser)
-		r.Get("/feed", app.getFeed)
+		r.Get("/feed", app.getUserFeed)
 		r.Route("/{userId}", func(r chi.Router) {
 			r.Use(app.userContextMiddleware)
 			r.Get("/", app.getUserHandler)
@@ -38,7 +38,6 @@ func (app *application) mount() http.Handler {
 	})
 
 	r.Route("/posts", func(r chi.Router) {
-		r.Get("/", app.getFeed)
 		r.Post("/", app.createPost)
 		r.Route("/{postId}",
 			func(r chi.Router) {

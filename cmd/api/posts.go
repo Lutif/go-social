@@ -47,18 +47,6 @@ func (app *application) getPost(w http.ResponseWriter, r *http.Request) {
 	writeJson(w, http.StatusOK, post)
 }
 
-func (app *application) getFeed(w http.ResponseWriter, r *http.Request) {
-	userId := int64(1) // replace with auth
-	var posts = []store.Post{}
-	err := app.store.Posts.ListByUserId(r.Context(), userId, &posts)
-	if err != nil {
-		writeNotFoundError(w, err)
-		return
-	}
-	writeJson(w, http.StatusOK, posts)
-
-}
-
 func (app *application) updatePost(w http.ResponseWriter, r *http.Request) {
 
 	post, _ := r.Context().Value(ctxPostKey).(store.Post)
